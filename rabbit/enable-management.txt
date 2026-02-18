@@ -1,0 +1,1 @@
+docker container exec -it dev-rabbitmq rabbitmq-plugins enable rabbitmq_management

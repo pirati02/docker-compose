@@ -1,0 +1,28 @@
+services:
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    user: root
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+    healthcheck:
+      test: [ "CMD-SHELL", '[ "$(curl -s -o /dev/null -I -w ''%{http_code}'' http://localhost:8000)" == "400" ]' ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin:4.6.1
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: "http://dynamodb-local:8000"
+      AWS_REGION: "eu-west-2"
+      AWS_ACCESS_KEY_ID: "abc"
+      AWS_SECRET_ACCESS_KEY: "def"
+    depends_on:
+      dynamodb-local:
+        condition: service_healthy

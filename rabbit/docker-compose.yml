@@ -1,0 +1,16 @@
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: dev-rabbitmq
+    ports:
+      - "5672:5672"   # RabbitMQ AMQP port
+      - "15672:15672" # RabbitMQ Management Dashboard (web UI)
+    environment:
+      RABBITMQ_DEFAULT_USER: admin       # Default username
+      RABBITMQ_DEFAULT_PASS: rbadminpass   # Default password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  # Persistent data
+
+volumes:
+  rabbitmq_data:
+    driver: local
